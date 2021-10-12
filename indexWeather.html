@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Brasília</h1>
+  <p style="font-size: larger;"></p>
+  <script>
+    function getHour(){
+      const d = new Date();
+      return d.getHours();
+    }
+    
+    const a = new XMLHttpRequest()
+    const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://www.tempo.com/brasilia.htm')}`
+    a.open("GET", url)
+    a.send()
+
+    a.onload = (e) => {
+      // console.log(a.responseText)
+      if(a.responseText){
+        // console.log(a.responseText)
+      }
+      if(a.responseText){
+        var string = JSON.stringify(a.responseText)
+        var stringBackup = JSON.stringify(a.responseText)
+        var display
+        //console.log("Buscou do site")
+        var i1 = string.search('<main')
+        string = string.substr(i1)
+        i1 = string.search('dato-temperatura changeUnit')
+        string = string.substring(i1)
+        var i2 = string.search('</span')
+        string = string.substr(0,i2)
+        //console.log(string)
+        string = string.substr(string.length-7) 
+        //console.log(`Temperatura atual ${string}`)
+        let temperaturaAtual = string
+        //document.querySelector('p').innerHTML = temperaturaAtual // Temperatura atual
+        //console.log(`Temperatura atual: ${temperaturaAtual}`)
+        display = '<p>'+`Temperatura atual: ${temperaturaAtual}`+'</p>'
+        string = stringBackup
+        i1 = string.search('dia d1 activo')
+        string = string.substr(i1)
+        i1 = string.search('maxima')
+        string = string.substr(i1)
+        i1 = string.search('>')
+        string = string.substr(i1)
+        i1 = string.search(';')
+        let tempMaxima = string.substr(1, i1-1)// Temperatura Máxima
+        //console.log(`Máxima de ${tempMaxima}`)
+        display += '<p>'+`Máxima de ${tempMaxima}`+'</p>'
+        i1 = string.search('minima')
+        string = string.substr(i1)
+        i1 = string.search('>')
+        string = string.substr(i1)
+        i1 = string.search(';')
+        let tempMinima = string.substr(1, i1-1)// Temperatura Mínima
+        //console.log(`Mínima de ${tempMinima}`)
+        display += '<p>'+`Mínima de ${tempMinima}`+'</p>'
+        i1 = string.search('tabla-horas')
+        string = string.substr(i1)
+        i1 = string.search('detalleH dh'+ getHour())
+        string = string.substr(i1)
+        console.log(string)
+        i1 = string.search('probabilidad-lluvia')
+        string = string.substr(i1)
+        i1 = string.search('<span>')
+        string = string.substr(i1)
+        i1 = string.search('</span>')
+        let probChuva = string.slice(6, i1)
+        //console.log("Probabilidade de chuva em "+probChuva+"|") // Probabilidade de Chuva
+        display += '<p>'+"Probabilidade de chuva em "+probChuva+'</p>'
+        i1 = string.search('Umidade')
+        string = string.substr(i1)
+        i1 = string.search('<strong>')
+        string = string.substr(i1)
+        i1 = string.search('</strong>')
+        let umidade = string.slice(8,i1) //Umidade relativa do ar
+        //console.log("Umidade relativa do ar " +umidade)
+        display += '<p>'+"Umidade relativa do ar " +umidade+'</p>'
+        document.querySelector('p').innerHTML = display
+
+      }
+
+    }
+
+  </script>
+</body>
+</html>
